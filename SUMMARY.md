@@ -1,3 +1,3 @@
 # Table of contents
 
-* [elasticsearch-installation-on-ubuntu20.04](README.md)
+* [Elasticsearch Installation on Ubuntu20.04](README.md)
