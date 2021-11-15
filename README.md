@@ -2,67 +2,48 @@
 
 This is a guide for Apache Nifi installation on Ubuntu 20.04
 
-## Step 1 - Create a Download Repository
+## Step 1 - Prepare the Environment
 
-Create a download repository to save the Anaconda installer.
-
-```
-mkdir downloads
-cd downloads
-```
-
-## Step 2 - Download Apache Nifi
-
-Check the latest version on [https://nifi.apache.org/download.html](https://nifi.apache.org/download.html) before running the code. If there is a newer release you can change the download link.
+Install apt-transport-https
 
 ```
-wget https://dlcdn.apache.org/nifi/1.15.0/nifi-1.15.0-bin.tar.gz
+sudo apt-get install apt-transport-https
 ```
 
-## Step 3 - Extract & Move Nifi Files&#x20;
-
-You need to extract files from the tar file you have downloaded.
+Update GPG key
 
 ```
-sudo tar -zxvf nifi-1.15.0-bin.tar.gz
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 ```
 
-You can move extracted files to the Nifi installation directory which you select (/opt for me).
+Add the repository to your system
 
 ```
-sudo mv nifi-1.15.0 /opt/
+echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
 ```
 
-## Step 4 - Configure Nifi Properties
+## Step 2 - Install Elasticsearch with Apt
 
-Go to the installation Nifi directory and reach into the config files.
-
-```
-cd /opt/nifi-1.15.0 
-cd conf
-```
-
-Edit nifi.properties file by changing the web host (to be able to reach Nifi UI from a remote server) and theport (optional).
+Install latest version ap elasticsearch using apt package manager.
 
 ```
-sudo nano nifi.properties
+sudo apt-get update 
+sudo apt-get install elasticsearch
 ```
 
-Edit the following lines and save the file.
+## Step 4 - Configure Elasticsearch
 
-> nifi.remote.input.secure=false      #should be false
->
->
->
-> nifi.web.http.host=10.115.209.128 #the ip address of the host.
->
-> nifi.web.http.port=7070 #port.
->
->
->
-> nifi.web.https.host=                   #should be empty
->
-> nifi.web.https.port=                   #should be empty
+Edit Elasticsearch yml file which is placed in /etc/elasticsearch.
+
+```
+sudo nano /etc/elasticsearch/elasticsearch.yml
+```
+
+Edit elasticsearch.yml file by changing the network host (to be able to reach Elasticsearch from a remote server).
+
+Change the following line and save the file.
+
+> network.host =0.0.0.0      #should be false
 
 ## Step 5 - Install Nifi Service
 
