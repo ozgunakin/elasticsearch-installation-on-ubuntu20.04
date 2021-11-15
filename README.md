@@ -28,10 +28,10 @@ Install latest version ap elasticsearch using apt package manager.
 
 ```
 sudo apt-get update 
-sudo apt-get install elasticsearch
+apt-get install elasticsearch
 ```
 
-## Step 4 - Configure Elasticsearch
+## Step 3 - Configure Elasticsearch
 
 Edit Elasticsearch yml file which is placed in /etc/elasticsearch.
 
@@ -43,22 +43,33 @@ Edit elasticsearch.yml file by changing the network host (to be able to reach El
 
 Change the following line and save the file.
 
-> network.host =0.0.0.0      #should be false
+> network.host =0.0.0.0      #sholud be changed
+>
+> discovery.seed.hosts = \["127.0.0.1"]
+>
+> \#Add following lines
+>
+> xpack.security.enabled: true xpack.security.transport.ssl.enabled: true xpack.security.transport.ssl.verification\_mode: certificate xpack.security.transport.ssl.client\_authentication: required xpack.security.transport.ssl.keystore.path: elastic-certificates.p12 xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
 
-## Step 5 - Install Nifi Service
+## Step 4 - Enable X-pack Security
 
-You need to install Nifi service to make easier the management of the Nifi as a service.
+
 
 ```
-cd /opt/nifi-1.15.0
-sudo ./bin/nifi.sh install
+cd /usr/share/elasticsearch
+
+./bin/elasticsearch-certutil ca
+
+./bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
+
+sudo chmod -R a+rwx elastic-certificates.p12
+
+mv elasticsearch-certificates.p12 /etc/elasticsearch/elastic-certificates.p12
+
+./bin/elasticsearch
 ```
 
-System daemon should be restarted to be able to start nifi using nifi service.
 
-```
-sudo systemctl daemon-reload
-```
 
 ## Step 6 - Start Nifi Service
 
