@@ -4,22 +4,24 @@ This is a guide for Apache Nifi installation on Ubuntu 20.04
 
 ## Step 1 - Prepare the Environment
 
+Install java11 - You can follow this guideline to install java ([https://github.com/ozgunakin/java-installation-on-ubuntu20.04](https://github.com/ozgunakin/java-installation-on-ubuntu20.04))
+
 Install apt-transport-https
 
 ```
-sudo apt-get install apt-transport-https
+sudo apt install apt-transport-https 
 ```
 
 Update GPG key
 
 ```
-wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add - 
 ```
 
 Add the repository to your system
 
 ```
-echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+add-apt-repository "deb https://artifacts.elastic.co/packages/7.x/apt stable main" 
 ```
 
 ## Step 2 - Install Elasticsearch with Apt
@@ -27,8 +29,8 @@ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee 
 Install latest version ap elasticsearch using apt package manager.
 
 ```
-sudo apt-get update 
-apt-get install elasticsearch
+sudo apt update 
+sudo apt install elasticsearch
 ```
 
 ## Step 3 - Configure Elasticsearch
@@ -39,49 +41,55 @@ Edit Elasticsearch yml file which is placed in /etc/elasticsearch.
 sudo nano /etc/elasticsearch/elasticsearch.yml
 ```
 
-Edit elasticsearch.yml file by changing the network host (to be able to reach Elasticsearch from a remote server).
-
 Change the following line and save the file.
 
-> network.host =0.0.0.0      #sholud be changed
->
-> discovery.seed.hosts = \["127.0.0.1"]
->
-> \#Add following lines
->
-> xpack.security.enabled: true xpack.security.transport.ssl.enabled: true xpack.security.transport.ssl.verification\_mode: certificate xpack.security.transport.ssl.client\_authentication: required xpack.security.transport.ssl.keystore.path: elastic-certificates.p12 xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
+> network.host =0.0.0.0      #sholud be chaged to be able to elastic from remote server
 
-## Step 4 - Enable X-pack Security
+## Step 4 - Start & Enable Elasticsearch
 
-
+Start elasticsearch as a service
 
 ```
-cd /usr/share/elasticsearch
-
-./bin/elasticsearch-certutil ca
-
-./bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
-
-sudo chmod -R a+rwx elastic-certificates.p12
-
-mv elasticsearch-certificates.p12 /etc/elasticsearch/elastic-certificates.p12
-
-./bin/elasticsearch
+sudo systemctl start elasticsearch
 ```
 
-
-
-## Step 6 - Start Nifi Service
-
-Start Nifi using Nifi service.
+Enable Elasticsearch service
 
 ```
-sudo service nifi start
+sudo systemctl enable elasticsearch
 ```
 
-Check the status of the service.
+Check the status
 
 ```
-sudo service nifi status
+service elasticsearch status
 ```
 
+The output should be like the following;
+
+![](.gitbook/assets/image.png)
+
+## Step - 5 Test Elasticsearch
+
+Your Elasticsearch service is up and running now. You can communicate with elasticsearch using curl command, for example you can use the command below to get information about your cluster.
+
+```
+curl -X GET "http://localhost:9200/?pretty" 
+```
+
+The output should be like;
+
+![](<.gitbook/assets/image (1).png>)
+
+## Hint
+
+If there is a problem with your installation you can purge elasticsearch with using the following commands and try again.
+
+```
+sudo apt-get remove elasticsearch
+
+sudo apt-get --purge autoremove elasticsearch
+
+sudo rm -rf /var/lib/elasticsearch/ 
+sudo rm -rf /etc/elasticsearch
+```
