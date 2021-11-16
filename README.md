@@ -35,15 +35,19 @@ sudo apt install elasticsearch
 
 ## Step 3 - Configure Elasticsearch
 
+You can skip this step if you dont want to access elasticsearch from remote server.
+
 Edit Elasticsearch yml file which is placed in /etc/elasticsearch.
 
 ```
 sudo nano /etc/elasticsearch/elasticsearch.yml
 ```
 
-Change the following line and save the file.
+Change the following lines and save the file.
 
 > network.host =0.0.0.0      #sholud be chaged to be able to elastic from remote server
+>
+> discovery.seed.hosts = \["your-ip-address"]
 
 ## Step 4 - Start & Enable Elasticsearch
 
