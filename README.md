@@ -1,6 +1,6 @@
 # Elasticsearch Installation on Ubuntu20.04
 
-This is a guide for Apache Nifi installation on Ubuntu 20.04
+This is a guide for Elasticsearch installation on Ubuntu 20.04
 
 ## Step 1 - Prepare the Environment
 
